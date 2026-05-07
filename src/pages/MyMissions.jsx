@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import AppNavbar from '../components/AppNavbar';
 
 const TYPE_STYLES = {
-  Alimentaire: { bg: 'bg-pink-100 dark:bg-pink-900/40', text: 'text-pink-800 dark:text-pink-300', label: 'Alimentaire', emoji: '🍎' },
-  Médical: { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-800 dark:text-blue-300', label: 'Médical', emoji: '💊' },
-  Social: { bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-800 dark:text-amber-300', label: 'Social', emoji: '🤝' },
-  Autre: { bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-700 dark:text-slate-300', label: 'Autre', emoji: '📦' },
+  Alimentaire: { bg: 'need-pill need-pill-food', label: 'Alimentaire', emoji: '🍎' },
+  Médical: { bg: 'need-pill need-pill-medical', label: 'Médical', emoji: '💊' },
+  Social: { bg: 'need-pill need-pill-clothing', label: 'Social', emoji: '🤝' },
+  Autre: { bg: 'need-pill need-pill-default', label: 'Autre', emoji: '📦' },
 };
 
 // User's location (lives in Tunis)
@@ -111,48 +111,43 @@ function MyMissions({ toggleTheme, isDark }) {
   const assignedDisplayed = showAllAssigned
     ? assignedMissions
     : assignedMissions.slice(0, ASSIGNED_DISPLAY_LIMIT);
-  const hasMoreAssigned = assignedMissions.length > ASSIGNED_DISPLAY_LIMIT;
 
   const MissionCard = ({ v, type }) => (
-    <div className={`rounded-xl border p-5 shadow-sm hover:shadow-md transition-shadow ${
-      v.isFar 
-        ? 'bg-orange-50 dark:bg-orange-900/10 border-orange-200 dark:border-orange-800' 
-        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600'
-    }`}>
+    <div className={`card ${v.isFar ? 'border-orange-500/50' : ''}`}>
       <div className="flex flex-wrap items-center gap-2 mb-2">
-        <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-100">
+        <h3 className="font-semibold text-lg text-[var(--t1)]">
           Visite prévue — {v.family?.name}
         </h3>
         {v.isFar ? (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-600">
             Loin de vous
           </span>
         ) : type === 'assigned' ? (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--blue-soft)] text-[var(--color-blue)]">
             Mission assignée
           </span>
         ) : (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--green-soft)] text-[var(--color-green)]">
             Mission ouverte
           </span>
         )}
       </div>
       
-      <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 flex items-center gap-2">
+      <p className="text-sm text-[var(--t2)] mb-3 flex items-center gap-2">
         <span aria-hidden>🕒</span> {formatDate(v.date)}
-        <span className="text-slate-300 dark:text-slate-600">|</span>
+        <span className="text-[var(--t3)]">|</span>
         <span aria-hidden>📍</span> {v.family?.address}
         {v.distance && (
           <>
-            <span className="text-slate-300 dark:text-slate-600">|</span>
-            <span aria-hidden>📏</span> <strong>{v.distance} km</strong>
+            <span className="text-[var(--t3)]">|</span>
+            <span aria-hidden>📏</span> <strong className="text-[var(--t1)]">{v.distance} km</strong>
           </>
         )}
       </p>
 
       {v.isFar && (
-        <div className="mb-4 p-3 bg-orange-100 dark:bg-orange-900/30 border border-orange-300 dark:border-orange-700 rounded-lg">
-          <p className="text-sm text-orange-800 dark:text-orange-200">
+        <div className="mb-4 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+          <p className="text-sm text-orange-600 font-medium">
             ⚠️ Cette mission est trop loin de vous ({v.distance} km &gt; {MAX_DISTANCE_KM} km). Vous pouvez la prendre, mais cherchez d'abord les missions proches.
           </p>
         </div>
@@ -162,10 +157,7 @@ function MyMissions({ toggleTheme, isDark }) {
         {v.types?.map((typeKey) => {
           const style = TYPE_STYLES[typeKey] || TYPE_STYLES.Autre;
           return (
-            <span
-              key={typeKey}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${style.bg} ${style.text}`}
-            >
+            <span key={typeKey} className={style.bg}>
               {style.emoji} {style.label}
             </span>
           );
@@ -173,7 +165,7 @@ function MyMissions({ toggleTheme, isDark }) {
       </div>
       <Link
         to={`/visits/${v._id}/checkin`}
-        className="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 text-sm font-medium text-white transition-colors bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900"
+        className="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 text-sm font-medium text-white transition-colors bg-[var(--blue)] rounded-lg hover:opacity-90"
       >
         Démarrer la mission
       </Link>
@@ -181,26 +173,26 @@ function MyMissions({ toggleTheme, isDark }) {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <AppNavbar activeRoute="missions" />
-      <main className="max-w-4xl mx-auto px-4 py-8 safe-area-bottom">
+    <div className="page-container">
+      <AppNavbar activeRoute="missions" toggleTheme={toggleTheme} isDark={isDark} />
+      <main className="page-main max-w-4xl mx-auto py-8">
         
         {/* NEARBY MISSIONS */}
         <section className="mb-10">
           <div className="mb-4">
-            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[var(--t1)] flex items-center gap-2">
               <span aria-hidden>🟢</span> Missions près de vous
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+            <p className="text-sm text-[var(--t2)] mt-1">
               Familles à proximité (moins de {MAX_DISTANCE_KM} km) - Priorité recommandée.
             </p>
           </div>
           {assignedMissions.length === 0 ? (
-            <div className="p-6 text-center rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-              <p className="text-slate-500 dark:text-slate-400">Aucune mission proche pour le moment.</p>
+            <div className="card text-center">
+              <p className="text-[var(--t2)]">Aucune mission proche pour le moment.</p>
             </div>
           ) : (
-            <div className="grid gap-4">
+            <div className="flex flex-col gap-4">
               {assignedDisplayed.map((v) => (
                 <MissionCard key={v._id} v={v} type="nearby" />
               ))}
@@ -211,19 +203,19 @@ function MyMissions({ toggleTheme, isDark }) {
         {/* FAR MISSIONS */}
         <section className="mb-10">
           <div className="mb-4">
-            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[var(--t1)] flex items-center gap-2">
               <span aria-hidden>🟠</span> Autres missions disponibles
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+            <p className="text-sm text-[var(--t2)] mt-1">
               Familles éloignées (plus de {MAX_DISTANCE_KM} km) - Explorez après les missions proches.
             </p>
           </div>
           {openMissions.length === 0 ? (
-            <div className="p-6 text-center rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-              <p className="text-slate-500 dark:text-slate-400">Aucune autre mission disponible.</p>
+            <div className="card text-center">
+              <p className="text-[var(--t2)]">Aucune autre mission disponible.</p>
             </div>
           ) : (
-            <div className="grid gap-4">
+            <div className="flex flex-col gap-4">
               {openMissions.map((v) => (
                 <MissionCard key={v._id} v={v} type="open" />
               ))}
@@ -233,27 +225,27 @@ function MyMissions({ toggleTheme, isDark }) {
 
         {/* COMPLETED MISSIONS */}
         <section>
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-4">
+          <h2 className="text-xl font-bold text-[var(--t1)] flex items-center gap-2 mb-4">
             <span aria-hidden>✅</span> Missions terminées
           </h2>
           {completedMissions.length === 0 ? (
-            <div className="p-6 text-center rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-              <p className="text-slate-500 dark:text-slate-400">Aucune mission terminée.</p>
+            <div className="card text-center">
+              <p className="text-[var(--t2)]">Aucune mission terminée.</p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
-              <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
+            <div className="card overflow-hidden !p-0">
+              <div className="divide-y divide-[var(--border)]">
                 {completedMissions.map((v) => (
-                  <Link key={v._id} to={`/families/${v._id}`} className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer">
+                  <Link key={v._id} to={`/families/${v._id}`} className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 hover:bg-[var(--surface2)] transition-colors cursor-pointer">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center text-green-600 dark:text-green-400">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[var(--green-soft)] flex items-center justify-center text-[var(--color-green)]">
                         <CheckCircleIcon className="w-6 h-6" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-slate-800 dark:text-slate-100 truncate">
+                        <p className="font-semibold text-[var(--t1)] truncate">
                           {v.family?.name}
                         </p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
+                        <p className="text-sm text-[var(--t2)] truncate">
                           {v.family?.address}
                         </p>
                       </div>
@@ -263,16 +255,13 @@ function MyMissions({ toggleTheme, isDark }) {
                         {v.types?.map((typeKey) => {
                           const style = TYPE_STYLES[typeKey] || TYPE_STYLES.Autre;
                           return (
-                            <span
-                              key={typeKey}
-                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${style.bg} ${style.text}`}
-                            >
+                            <span key={typeKey} className={style.bg}>
                               {style.emoji} {style.label}
                             </span>
                           );
                         })}
                       </div>
-                      <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
+                      <span className="text-xs font-medium text-[var(--t3)]">
                         {formatRelativeDate(v.date)}
                       </span>
                     </div>

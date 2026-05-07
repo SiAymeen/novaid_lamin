@@ -1,112 +1,187 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { Search, Edit2, Trash2 } from 'lucide-react';
 import AppNavbar from '../components/AppNavbar';
+import AddUserModal from '../components/AddUserModal';
 
-const ROLES = [
-  { value: 'VOLUNTEER', label: 'Bénévole' },
-  { value: 'COORDINATOR', label: 'Coordinateur' },
-  { value: 'ADMIN', label: 'Administrateur' },
+// --- ROLE BADGE ---
+function RoleBadge({ role }) {
+  let bgClass = '';
+  let textClass = '';
+  let label = '';
+  let borderClass = '';
+
+  switch (role) {
+    case 'ADMIN':
+      bgClass = 'bg-purple-500/10 dark:bg-purple-500/20';
+      textClass = 'text-purple-600 dark:text-purple-400';
+      borderClass = 'border-purple-500/30';
+      label = 'Administrateur';
+      break;
+    case 'COORDINATOR':
+      bgClass = 'bg-amber-500/10 dark:bg-amber-500/20';
+      textClass = 'text-amber-600 dark:text-amber-400';
+      borderClass = 'border-amber-500/30';
+      label = 'Coordinateur';
+      break;
+    case 'VOLUNTEER':
+    default:
+      bgClass = 'bg-blue-500/10 dark:bg-blue-500/20';
+      textClass = 'text-blue-600 dark:text-blue-400';
+      borderClass = 'border-blue-500/30';
+      label = 'Bénévole';
+      break;
+  }
+
+  return (
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${bgClass} ${textClass} ${borderClass}`}>
+      {label}
+    </span>
+  );
+}
+
+// --- MOCK DATA ---
+const initialUsers = [
+  { _id: '1', name: 'Ahmed Ben Salah', email: 'ahmed@novaid.tn', role: 'ADMIN' },
+  { _id: '2', name: 'Sarra Trabelsi', email: 'sarra@novaid.tn', role: 'COORDINATOR' },
+  { _id: '3', name: 'Youssef Kallel', email: 'youssef@novaid.tn', role: 'VOLUNTEER' },
 ];
 
 function Users({ toggleTheme, isDark }) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('VOLUNTEER');
-  const [message, setMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState(initialUsers);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage(null);
-    setLoading(true);
-    
-    // Simuler un appel réseau
-    setTimeout(() => {
-      setMessage('Utilisateur créé avec succès');
-      setName('');
-      setEmail('');
-      setPassword('');
-      setRole('VOLUNTEER');
-      setLoading(false);
-    }, 1000);
+  const handleOpenAdd = () => {
+    setUserToEdit(null);
+    setIsModalOpen(true);
   };
 
-  const isError = message && message !== 'Utilisateur créé avec succès';
+  const handleOpenEdit = (user) => {
+    setUserToEdit(user);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteUser = (userId) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+      setUsers(prev => prev.filter(u => u._id !== userId));
+    }
+  };
+
+  const handleSaveUser = (userData) => {
+    setUsers(prev => {
+      const exists = prev.find(u => u._id === userData._id);
+      if (exists) {
+        return prev.map(u => u._id === userData._id ? userData : u);
+      }
+      return [...prev, userData];
+    });
+  };
+
+  const filteredUsers = users.filter((u) => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    const name = (u.name || '').toLowerCase();
+    const email = (u.email || '').toLowerCase();
+    return name.includes(q) || email.includes(q);
+  });
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+    <div className="page-container">
       <AppNavbar activeRoute="users" toggleTheme={toggleTheme} isDark={isDark} />
-      <main className="max-w-md mx-auto px-4 py-8">
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-600 p-6 shadow-sm">
-          <h2 className="text-lg font-medium text-slate-800 dark:text-slate-100 mb-4">Créer un utilisateur</h2>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="user-name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nom complet</label>
+      
+      <main className="page-main">
+        {/* PAGE HEADER */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <div>
+            <h1 className="page-title">Gestion des Utilisateurs</h1>
+            <p className="text-secondary">Gérer les accès et les rôles de l'équipe</p>
+          </div>
+          <button
+            onClick={handleOpenAdd}
+            className="btn btn-primary"
+          >
+            + Ajouter un utilisateur
+          </button>
+        </div>
+
+        <AddUserModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveUser}
+          initialData={userToEdit}
+        />
+
+        {/* SEARCH AND TABLE SECTION */}
+        <div className="mb-6">
+          <div className="table-wrapper">
+            <div className="table-search">
+              <Search size={20} className="search-icon" />
               <input
-                id="user-name"
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                autoComplete="name"
-                className="w-full min-h-[44px] px-3 py-3 border border-slate-300 dark:border-slate-500 dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Rechercher un utilisateur..."
+                className="search-input"
               />
             </div>
-            <div>
-              <label htmlFor="user-email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Adresse email</label>
-              <input
-                id="user-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-                className="w-full min-h-[44px] px-3 py-3 border border-slate-300 dark:border-slate-500 dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label htmlFor="user-password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Mot de passe</label>
-              <input
-                id="user-password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                autoComplete="new-password"
-                className="w-full min-h-[44px] px-3 py-3 border border-slate-300 dark:border-slate-500 dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label htmlFor="user-role" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Rôle</label>
-              <select
-                id="user-role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full min-h-[44px] px-3 py-3 border border-slate-300 dark:border-slate-500 dark:bg-slate-700 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500"
-                aria-required="true"
-              >
-                {ROLES.map((r) => (
-                  <option key={r.value} value={r.value}>{r.label}</option>
-                ))}
-              </select>
+
+            {/* RESPONSIVE TABLE */}
+            <div className="overflow-x-auto">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Nom complet</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th className="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.length > 0 ? (
+                    filteredUsers.map((user) => (
+                      <tr key={user._id}>
+                        <td className="font-medium text-slate-800 dark:text-slate-200">
+                          {user.name}
+                        </td>
+                        <td className="text-slate-600 dark:text-slate-400">
+                          {user.email}
+                        </td>
+                        <td>
+                          <RoleBadge role={user.role} />
+                        </td>
+                        <td>
+                          <div className="flex items-center justify-end gap-2">
+                            <button 
+                              onClick={() => handleOpenEdit(user)}
+                              className="action-button edit"
+                              title="Éditer"
+                            >
+                              <Edit2 size={16} />
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteUser(user._id)}
+                              className="action-button delete"
+                              title="Supprimer"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" className="text-center py-8 text-muted">
+                        Aucun utilisateur trouvé
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
-          {message && (
-            <p className={`mt-4 text-sm ${isError ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
-              {message}
-            </p>
-          )}
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-4 w-full min-h-[44px] py-3 px-4 font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50"
-          >
-            {loading ? 'Création en cours...' : 'Créer l\'utilisateur'}
-          </button>
-        </form>
+        </div>
       </main>
     </div>
   );

@@ -11,6 +11,8 @@ import VisitCheckin from './pages/VisitCheckin';
 import Map from './pages/Map';
 import Login from './pages/Login';
 import FamilyDetails from './pages/FamilyDetails';
+import FamilyManagement from './pages/FamilyManagement';
+import Home from './pages/Home';
 
 function App() {
   const [isDark, setIsDark] = useState(false);
@@ -20,12 +22,22 @@ function App() {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const shouldBeDark = savedTheme ? savedTheme === 'dark' : prefersDark;
     setIsDark(shouldBeDark);
+    if (!shouldBeDark) {
+      document.body.classList.add('light-mode');
+    } else {
+      document.body.classList.remove('light-mode');
+    }
   }, []);
 
   const toggleTheme = () => {
     const newIsDark = !isDark;
     setIsDark(newIsDark);
     localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
+    if (!newIsDark) {
+      document.body.classList.add('light-mode');
+    } else {
+      document.body.classList.remove('light-mode');
+    }
   };
 
   return (
@@ -33,7 +45,7 @@ function App() {
       <div className="page-container">
         <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Home toggleTheme={toggleTheme} isDark={isDark} />} />
           <Route path="/dashboard" element={<Dashboard toggleTheme={toggleTheme} isDark={isDark} />} />
           <Route path="/users" element={<Users toggleTheme={toggleTheme} isDark={isDark} />} />
           <Route path="/alerts" element={<Alerts toggleTheme={toggleTheme} isDark={isDark} />} />
@@ -44,6 +56,7 @@ function App() {
           <Route path="/settings" element={<Settings toggleTheme={toggleTheme} isDark={isDark} />} />
           <Route path="/visits/:id/checkin" element={<VisitCheckin toggleTheme={toggleTheme} isDark={isDark} />} />
           <Route path="/families/:id" element={<FamilyDetails toggleTheme={toggleTheme} isDark={isDark} />} />
+          <Route path="/families" element={<FamilyManagement toggleTheme={toggleTheme} isDark={isDark} />} />
         </Routes>
       </BrowserRouter>
     </div>
