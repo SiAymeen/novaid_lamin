@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Users, AlertTriangle, CheckCircle } from 'lucide-react';
-import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import AppNavbar from '../components/AppNavbar';
+import { useTranslation } from 'react-i18next';
 
-// --- ANIMATED COUNTER COMPONENT ---
+// --- ANIMATED COUNTER ---
 function CountUpValue({ targetValue }) {
   const [displayValue, setDisplayValue] = useState(0);
 
@@ -11,7 +12,7 @@ function CountUpValue({ targetValue }) {
     let animationFrameId;
     let currentValue = 0;
     const startTime = Date.now();
-    const duration = 700; // 700ms animation
+    const duration = 700;
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
@@ -31,20 +32,17 @@ function CountUpValue({ targetValue }) {
   return <span>{displayValue}</span>;
 }
 
-// --- MOCK DASHBOARD CHARTS WITH NEW DESIGN SYSTEM ---
-const NEEDS_COLORS = ['#4f7fff', '#22c87a', '#f0a742', '#f04e4e', '#9b7ff4', '#2dd4bf'];
+function DashboardCharts() {
+  const { t } = useTranslation();
 
-function buildNeedsData() {
-  return [
-    { name: 'Alimentaire', value: 4 },
-    { name: 'Médical', value: 2 },
-    { name: 'Vêtements', value: 2 },
-    { name: 'Social', value: 2 }
+  const needsData = [
+    { name: t('dashboard.needs.food'), value: 4 },
+    { name: t('dashboard.needs.medical'), value: 2 },
+    { name: t('dashboard.needs.clothes'), value: 2 },
+    { name: t('dashboard.needs.social'), value: 2 }
   ];
-}
 
-function buildLast7DaysData() {
-  return [
+  const weekData = [
     { date: '12/04', visites: 1 },
     { date: '13/04', visites: 0 },
     { date: '14/04', visites: 3 },
@@ -53,17 +51,12 @@ function buildLast7DaysData() {
     { date: '17/04', visites: 0 },
     { date: '18/04', visites: 1 },
   ];
-}
-
-function DashboardCharts() {
-  const needsData = buildNeedsData();
-  const weekData = buildLast7DaysData();
 
   return (
     <div className="grid-2 gap-6 mb-6">
       {/* DONUT CHART */}
       <div className="card">
-        <h3 className="text-base font-medium text-primary mb-4">Répartition des Besoins</h3>
+        <h3 className="text-base font-medium text-primary mb-4">{t('dashboard.needs.title')}</h3>
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -76,70 +69,33 @@ function DashboardCharts() {
                 innerRadius={60}
                 outerRadius={100}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                labelLine={true}
               >
                 {needsData.map((_, index) => (
-                  <Cell key={index} fill={NEEDS_COLORS[index % NEEDS_COLORS.length]} />
+                  <Cell key={index} fill={['#4f7fff', '#22c87a', '#f0a742', '#f04e4e'][index]} />
                 ))}
               </Pie>
               <RechartsTooltip 
-                formatter={(value) => [`${value} famille(s)`, 'Nombre']}
-                contentStyle={{ 
-                  backgroundColor: 'var(--bg-card)', 
-                  border: '1px solid rgba(79,127,255,0.3)',
-                  borderRadius: '8px',
-                  color: 'var(--text-primary)'
-                }}
+                formatter={(value) => [`${value} ${t('dashboard.families')}`, '']}
               />
             </PieChart>
           </ResponsiveContainer>
-        </div>
-        <div className="chart-legend mt-4">
-          {needsData.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-2 text-sm">
-              <div 
-                className="w-3 h-3 rounded-full" 
-                style={{ backgroundColor: NEEDS_COLORS[idx % NEEDS_COLORS.length] }}
-              />
-              <span className="text-secondary">{item.name}: {item.value}</span>
-            </div>
-          ))}
         </div>
       </div>
 
       {/* BAR CHART */}
       <div className="card">
-        <h3 className="text-base font-medium text-primary mb-4">Visites cette semaine</h3>
+        <h3 className="text-base font-medium text-primary mb-4">{t('dashboard.visits.title')}</h3>
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={weekData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <BarChart data={weekData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(139,146,165,0.2)" />
-              <XAxis 
-                dataKey="date" 
-                tick={{ fill: "var(--text-muted)", fontSize: 12 }} 
-                stroke="rgba(139,146,165,0.2)"
-              />
-              <YAxis 
-                allowDecimals={false} 
-                tick={{ fill: "var(--text-muted)", fontSize: 12 }} 
-                stroke="rgba(139,146,165,0.2)"
-              />
+              <XAxis dataKey="date" tick={{ fill: "var(--text-muted)", fontSize: 12 }} />
+              <YAxis allowDecimals={false} tick={{ fill: "var(--text-muted)", fontSize: 12 }} />
               <RechartsTooltip
-                formatter={(value) => [value, 'Visites']}
-                labelFormatter={(label) => `Jour : ${label}`}
-                contentStyle={{ 
-                  backgroundColor: 'var(--bg-card)', 
-                  border: '1px solid rgba(79,127,255,0.3)',
-                  borderRadius: '8px',
-                  color: 'var(--text-primary)'
-                }}
+                formatter={(value) => [value, t('dashboard.visits.label')]}
+                labelFormatter={(label) => `${t('dashboard.visits.day')} ${label}`}
               />
-              <Bar 
-                dataKey="visites" 
-                fill="#4f7fff" 
-                radius={[4, 4, 0, 0]} 
-                name="Visites"
-              />
+              <Bar dataKey="visites" fill="#4f7fff" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -149,8 +105,9 @@ function DashboardCharts() {
 }
 
 function Dashboard({ toggleTheme, isDark }) {
-  // Mock statistics since family data is moved
-  const totalFamilies = 3; 
+  const { t } = useTranslation();
+
+  const totalFamilies = 3;
   const urgentFamilies = 2;
   const visitsCount = 5;
 
@@ -159,24 +116,22 @@ function Dashboard({ toggleTheme, isDark }) {
       <AppNavbar activeRoute="dashboard" toggleTheme={toggleTheme} isDark={isDark} />
       
       <main className="page-main">
-        {/* PAGE HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="page-title">Tableau de Bord</h1>
-            <p className="text-secondary">Aperçu des familles et statistiques</p>
+            <h1 className="page-title">{t('dashboard.title')}</h1>
+            <p className="text-secondary">{t('dashboard.subtitle')}</p>
           </div>
         </div>
 
-        {/* STAT CARDS - 3 COLUMN GRID */}
+        {/* STAT CARDS */}
         <div className="grid-3 gap-4 mb-8">
-          {/* Total Families Card */}
           <div className="card card-accent-top accent-blue">
             <div className="stat-card">
               <div className="stat-icon blue">
                 <Users size={28} />
               </div>
               <div>
-                <p className="stat-label">Total Familles</p>
+                <p className="stat-label">{t('dashboard.stats.totalFamilies')}</p>
                 <p className="stat-value">
                   <CountUpValue targetValue={totalFamilies} />
                 </p>
@@ -184,14 +139,13 @@ function Dashboard({ toggleTheme, isDark }) {
             </div>
           </div>
 
-          {/* Urgent Families Card */}
           <div className="card card-accent-top accent-red">
             <div className="stat-card">
               <div className="stat-icon red">
                 <AlertTriangle size={28} />
               </div>
               <div>
-                <p className="stat-label">Familles Urgentes</p>
+                <p className="stat-label">{t('dashboard.stats.urgentFamilies')}</p>
                 <p className="stat-value">
                   <CountUpValue targetValue={urgentFamilies} />
                 </p>
@@ -199,14 +153,13 @@ function Dashboard({ toggleTheme, isDark }) {
             </div>
           </div>
 
-          {/* Completed Visits Card */}
           <div className="card card-accent-top accent-green">
             <div className="stat-card">
               <div className="stat-icon green">
                 <CheckCircle size={28} />
               </div>
               <div>
-                <p className="stat-label">Visites Réalisées</p>
+                <p className="stat-label">{t('dashboard.stats.visitsDone')}</p>
                 <p className="stat-value">
                   <CountUpValue targetValue={visitsCount} />
                 </p>
@@ -215,7 +168,6 @@ function Dashboard({ toggleTheme, isDark }) {
           </div>
         </div>
 
-        {/* CHARTS SECTION */}
         <DashboardCharts />
       </main>
     </div>

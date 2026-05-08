@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Search, Edit2, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import AppNavbar from '../components/AppNavbar';
 import AddUserModal from '../components/AddUserModal';
 
 // --- ROLE BADGE ---
 function RoleBadge({ role }) {
+  const { t } = useTranslation();
   let bgClass = '';
   let textClass = '';
-  let label = '';
   let borderClass = '';
 
   switch (role) {
@@ -15,22 +16,22 @@ function RoleBadge({ role }) {
       bgClass = 'bg-purple-500/10 dark:bg-purple-500/20';
       textClass = 'text-purple-600 dark:text-purple-400';
       borderClass = 'border-purple-500/30';
-      label = 'Administrateur';
       break;
     case 'COORDINATOR':
       bgClass = 'bg-amber-500/10 dark:bg-amber-500/20';
       textClass = 'text-amber-600 dark:text-amber-400';
       borderClass = 'border-amber-500/30';
-      label = 'Coordinateur';
       break;
     case 'VOLUNTEER':
     default:
       bgClass = 'bg-blue-500/10 dark:bg-blue-500/20';
       textClass = 'text-blue-600 dark:text-blue-400';
       borderClass = 'border-blue-500/30';
-      label = 'Bénévole';
       break;
   }
+
+  // Fall back to the raw role identifier if an unknown role slips through.
+  const label = t(`users.role.${role}`, role);
 
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${bgClass} ${textClass} ${borderClass}`}>
@@ -47,6 +48,7 @@ const initialUsers = [
 ];
 
 function Users({ toggleTheme, isDark }) {
+  const { t } = useTranslation();
   const [users, setUsers] = useState(initialUsers);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,7 +65,7 @@ function Users({ toggleTheme, isDark }) {
   };
 
   const handleDeleteUser = (userId) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+    if (window.confirm(t('users.confirmDelete'))) {
       setUsers(prev => prev.filter(u => u._id !== userId));
     }
   };
@@ -89,19 +91,19 @@ function Users({ toggleTheme, isDark }) {
   return (
     <div className="page-container">
       <AppNavbar activeRoute="users" toggleTheme={toggleTheme} isDark={isDark} />
-      
+
       <main className="page-main">
         {/* PAGE HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="page-title">Gestion des Utilisateurs</h1>
-            <p className="text-secondary">Gérer les accès et les rôles de l'équipe</p>
+            <h1 className="page-title">{t('users.title')}</h1>
+            <p className="text-secondary">{t('users.subtitle')}</p>
           </div>
           <button
             onClick={handleOpenAdd}
             className="btn btn-primary"
           >
-            + Ajouter un utilisateur
+            {t('users.addUser')}
           </button>
         </div>
 
@@ -121,7 +123,7 @@ function Users({ toggleTheme, isDark }) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Rechercher un utilisateur..."
+                placeholder={t('users.searchPlaceholder')}
                 className="search-input"
               />
             </div>
@@ -131,10 +133,10 @@ function Users({ toggleTheme, isDark }) {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Nom complet</th>
-                    <th>Email</th>
-                    <th>Rôle</th>
-                    <th className="text-right">Actions</th>
+                    <th>{t('users.table.name')}</th>
+                    <th>{t('users.table.email')}</th>
+                    <th>{t('users.table.role')}</th>
+                    <th className="text-right">{t('users.table.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -152,17 +154,17 @@ function Users({ toggleTheme, isDark }) {
                         </td>
                         <td>
                           <div className="flex items-center justify-end gap-2">
-                            <button 
+                            <button
                               onClick={() => handleOpenEdit(user)}
                               className="action-button edit"
-                              title="Éditer"
+                              title={t('users.table.edit')}
                             >
                               <Edit2 size={16} />
                             </button>
-                            <button 
+                            <button
                               onClick={() => handleDeleteUser(user._id)}
                               className="action-button delete"
-                              title="Supprimer"
+                              title={t('users.table.delete')}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -173,7 +175,7 @@ function Users({ toggleTheme, isDark }) {
                   ) : (
                     <tr>
                       <td colSpan="4" className="text-center py-8 text-muted">
-                        Aucun utilisateur trouvé
+                        {t('users.noResults')}
                       </td>
                     </tr>
                   )}

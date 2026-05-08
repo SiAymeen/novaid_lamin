@@ -1,0 +1,185 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "close": "Close",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "reset": "Reset",
+    "saved": "Preferences saved!",
+    "today": "Today",
+    "viewFile": "View file"
+  },
+  "navbar": {
+    "dashboard": "Dashboard",
+    "families": "Families",
+    "alerts": "Alerts",
+    "map": "Map",
+    "inventory": "Inventory",
+    "users": "Users",
+    "missions": "My Missions",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Overview of families and statistics",
+    "stats": {
+      "totalFamilies": "Total Families",
+      "urgentFamilies": "Urgent Families",
+      "visitsDone": "Visits Completed"
+    },
+    "needs": {
+      "title": "Needs Distribution",
+      "food": "Food",
+      "medical": "Medical",
+      "clothes": "Clothes",
+      "social": "Social",
+      "school": "School"
+    },
+    "visits": {
+      "title": "Visits this week",
+      "label": "Visits",
+      "day": "Day:"
+    },
+    "families": "family(s)"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Customize the application display",
+    "fontSize": "Text Size",
+    "fontSizeDesc": "Choose a size for better readability.",
+    "fontWeight": "Text Weight",
+    "fontWeightDesc": "Increase for better contrast.",
+    "appearance": "Appearance",
+    "appearanceDesc": "Choose light or dark display mode.",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "languageDesc": "Choose the interface language."
+  },
+  "language": {
+    "switch": "Language",
+    "english": "English",
+    "french": "French",
+    "arabic": "Arabic"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "subtitle": "Critical situations and recent activity",
+    "criticalFamilies": "Critical families",
+    "urgentSituations": "Urgent situations",
+    "critical": "Critical",
+    "forgottenVisits": "Forgotten visits",
+    "lastVisit": "Last visit",
+    "noCritical": "No critical situations at the moment",
+    "criticalStock": "Critical stock",
+    "stockOK": "Stock levels are fine",
+    "recentReports": "Recent reports",
+    "noReports": "No recent reports",
+    "planVisit": "Schedule a visit",
+    "visitSaved": "Visit saved successfully",
+    "neverVisited": "Never visited",
+    "yesterday": "Yesterday",
+    "daysAgo_one": "{{count}} day ago",
+    "daysAgo_other": "{{count}} days ago"
+  },
+  "familyManagement": {
+    "title": "Family Management",
+    "subtitle": "Family directory and tracking",
+    "addFamily": "+ Add family",
+    "searchPlaceholder": "Search a family...",
+    "confirmDelete": "Are you sure you want to delete this family?",
+    "noResults": "No family found",
+    "table": {
+      "name": "Name",
+      "address": "Address",
+      "status": "Status",
+      "needs": "Needs",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "status": {
+      "urgent": "URGENT",
+      "stable": "STABLE"
+    }
+  },
+  "inventory": {
+    "title": "Stock Management",
+    "subtitle": "Manage your association's stock",
+    "addItem": "+ Add item",
+    "searchPlaceholder": "Search an item...",
+    "confirmDelete": "Are you sure you want to delete this item?",
+    "noResults": "No item found",
+    "table": {
+      "name": "Item name",
+      "category": "Category",
+      "status": "Status",
+      "quantity": "Quantity",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "addQty": "Add",
+      "removeQty": "Remove"
+    },
+    "status": {
+      "low": "Low",
+      "ok": "OK"
+    },
+    "category": {
+      "food": "Food",
+      "medical": "Medical",
+      "school": "School",
+      "clothes": "Clothes",
+      "social": "Social",
+      "other": "Other"
+    },
+    "unit": {
+      "box": "boxes",
+      "piece": "pieces",
+      "kg": "kg"
+    }
+  },
+  "users": {
+    "title": "User Management",
+    "subtitle": "Manage team access and roles",
+    "addUser": "+ Add user",
+    "searchPlaceholder": "Search a user...",
+    "confirmDelete": "Are you sure you want to delete this user?",
+    "noResults": "No user found",
+    "table": {
+      "name": "Full name",
+      "email": "Email",
+      "role": "Role",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "role": {
+      "ADMIN": "Administrator",
+      "COORDINATOR": "Coordinator",
+      "VOLUNTEER": "Volunteer"
+    }
+  },
+    "missions": {
+    "title": "My Missions",
+    "nearbyTitle": "Missions near you",
+    "nearbySubtitle": "Families nearby (less than {{max}} km) - Recommended priority.",
+    "noNearby": "No nearby missions at the moment.",
+    "farTitle": "Other available missions",
+    "farSubtitle": "Distant families (more than {{max}} km) - Explore after nearby missions.",
+    "noFar": "No other missions available.",
+    "completedTitle": "Completed missions",
+    "noCompleted": "No completed missions.",
+    "visitPlanned": "Visit scheduled — ",
+    "farAway": "Far from you",
+    "assigned": "Mission assigned",
+    "open": "Open mission",
+    "farWarning": "⚠️ This mission is too far from you ({{distance}} km > {{max}} km). You can take it, but look for nearby missions first.",
+    "startMission": "Start mission"
+  }
+}

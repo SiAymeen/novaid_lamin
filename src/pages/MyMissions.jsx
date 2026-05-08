@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import AppNavbar from '../components/AppNavbar';
 
 const TYPE_STYLES = {
@@ -46,14 +47,14 @@ function formatDate(d) {
   });
 }
 
-function formatRelativeDate(d) {
+function formatRelativeDate(d, t) {
   const date = new Date(d);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffDays = Math.floor(diffMs / 86400000);
-  if (diffDays === 0) return "Aujourd'hui";
-  if (diffDays === 1) return 'Hier';
-  if (diffDays < 7) return `Il y a ${diffDays} jours`;
+  if (diffDays === 0) return t('common.today');
+  if (diffDays === 1) return t('alerts.yesterday');
+  if (diffDays < 7) return t('alerts.daysAgo_other', { count: diffDays });
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
 }
 
@@ -66,6 +67,7 @@ function CheckCircleIcon({ className }) {
 }
 
 function MyMissions({ toggleTheme, isDark }) {
+  const { t } = useTranslation();
   const [showAllAssigned, setShowAllAssigned] = useState(false);
 
   // MOCK DATA - Missions based on families from map
@@ -116,19 +118,19 @@ function MyMissions({ toggleTheme, isDark }) {
     <div className={`card ${v.isFar ? 'border-orange-500/50' : ''}`}>
       <div className="flex flex-wrap items-center gap-2 mb-2">
         <h3 className="font-semibold text-lg text-[var(--t1)]">
-          Visite prévue — {v.family?.name}
+          {t('missions.visitPlanned')}{v.family?.name}
         </h3>
         {v.isFar ? (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-600">
-            Loin de vous
+            {t('missions.farAway')}
           </span>
-        ) : type === 'assigned' ? (
+        ) : type === 'nearby' ? (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--blue-soft)] text-[var(--color-blue)]">
-            Mission assignée
+            {t('missions.assigned')}
           </span>
         ) : (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--green-soft)] text-[var(--color-green)]">
-            Mission ouverte
+            {t('missions.open')}
           </span>
         )}
       </div>
@@ -148,7 +150,7 @@ function MyMissions({ toggleTheme, isDark }) {
       {v.isFar && (
         <div className="mb-4 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
           <p className="text-sm text-orange-600 font-medium">
-            ⚠️ Cette mission est trop loin de vous ({v.distance} km &gt; {MAX_DISTANCE_KM} km). Vous pouvez la prendre, mais cherchez d'abord les missions proches.
+            {t('missions.farWarning', { distance: v.distance, max: MAX_DISTANCE_KM })}
           </p>
         </div>
       )}
@@ -167,7 +169,7 @@ function MyMissions({ toggleTheme, isDark }) {
         to={`/visits/${v._id}/checkin`}
         className="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 text-sm font-medium text-white transition-colors bg-[var(--blue)] rounded-lg hover:opacity-90"
       >
-        Démarrer la mission
+        {t('missions.startMission')}
       </Link>
     </div>
   );
@@ -181,15 +183,15 @@ function MyMissions({ toggleTheme, isDark }) {
         <section className="mb-10">
           <div className="mb-4">
             <h2 className="text-xl font-bold text-[var(--t1)] flex items-center gap-2">
-              <span aria-hidden>🟢</span> Missions près de vous
+              <span aria-hidden>🟢</span> {t('missions.nearbyTitle')}
             </h2>
             <p className="text-sm text-[var(--t2)] mt-1">
-              Familles à proximité (moins de {MAX_DISTANCE_KM} km) - Priorité recommandée.
+              {t('missions.nearbySubtitle', { max: MAX_DISTANCE_KM })}
             </p>
           </div>
           {assignedMissions.length === 0 ? (
             <div className="card text-center">
-              <p className="text-[var(--t2)]">Aucune mission proche pour le moment.</p>
+              <p className="text-[var(--t2)]">{t('missions.noNearby')}</p>
             </div>
           ) : (
             <div className="flex flex-col gap-4">
@@ -204,15 +206,15 @@ function MyMissions({ toggleTheme, isDark }) {
         <section className="mb-10">
           <div className="mb-4">
             <h2 className="text-xl font-bold text-[var(--t1)] flex items-center gap-2">
-              <span aria-hidden>🟠</span> Autres missions disponibles
+              <span aria-hidden>🟠</span> {t('missions.farTitle')}
             </h2>
             <p className="text-sm text-[var(--t2)] mt-1">
-              Familles éloignées (plus de {MAX_DISTANCE_KM} km) - Explorez après les missions proches.
+              {t('missions.farSubtitle', { max: MAX_DISTANCE_KM })}
             </p>
           </div>
           {openMissions.length === 0 ? (
             <div className="card text-center">
-              <p className="text-[var(--t2)]">Aucune autre mission disponible.</p>
+              <p className="text-[var(--t2)]">{t('missions.noFar')}</p>
             </div>
           ) : (
             <div className="flex flex-col gap-4">
@@ -226,11 +228,11 @@ function MyMissions({ toggleTheme, isDark }) {
         {/* COMPLETED MISSIONS */}
         <section>
           <h2 className="text-xl font-bold text-[var(--t1)] flex items-center gap-2 mb-4">
-            <span aria-hidden>✅</span> Missions terminées
+            <span aria-hidden>✅</span> {t('missions.completedTitle')}
           </h2>
           {completedMissions.length === 0 ? (
             <div className="card text-center">
-              <p className="text-[var(--t2)]">Aucune mission terminée.</p>
+              <p className="text-[var(--t2)]">{t('missions.noCompleted')}</p>
             </div>
           ) : (
             <div className="card overflow-hidden !p-0">
@@ -262,7 +264,7 @@ function MyMissions({ toggleTheme, isDark }) {
                         })}
                       </div>
                       <span className="text-xs font-medium text-[var(--t3)]">
-                        {formatRelativeDate(v.date)}
+                        {formatRelativeDate(v.date, t)}
                       </span>
                     </div>
                   </Link>

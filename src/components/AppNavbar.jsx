@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bell, Globe, Package, Users, Target, Settings, LogOut, Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 function AppNavbar({ activeRoute = 'dashboard', toggleTheme, isDark }) {
+  const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const NAV_ITEMS = [
-    { key: 'dashboard', to: '/dashboard', label: 'Tableau de bord', icon: null },
-    { key: 'families', to: '/families', label: 'Familles', icon: Users },
-    { key: 'alerts', to: '/alerts', label: 'Alertes', icon: Bell },
-    { key: 'map', to: '/map', label: 'Carte', icon: Globe },
-    { key: 'inventory', to: '/inventory', label: 'Stocks', icon: Package },
-    { key: 'users', to: '/users', label: 'Utilisateurs', icon: Users },
-    { key: 'missions', to: '/missions', label: 'Missions', icon: Target },
-    { key: 'settings', to: '/settings', label: 'Paramètres', icon: Settings },
+    { key: 'dashboard', to: '/dashboard', labelKey: 'navbar.dashboard' },
+    { key: 'families', to: '/families', labelKey: 'navbar.families', icon: Users },
+    { key: 'alerts', to: '/alerts', labelKey: 'navbar.alerts', icon: Bell },
+    { key: 'map', to: '/map', labelKey: 'navbar.map', icon: Globe },
+    { key: 'inventory', to: '/inventory', labelKey: 'navbar.inventory', icon: Package },
+    { key: 'users', to: '/users', labelKey: 'navbar.users', icon: Users },
+    { key: 'missions', to: '/missions', labelKey: 'navbar.missions', icon: Target },
+    { key: 'settings', to: '/settings', labelKey: 'navbar.settings', icon: Settings },
   ];
 
   return (
@@ -36,7 +38,7 @@ function AppNavbar({ activeRoute = 'dashboard', toggleTheme, isDark }) {
                   className={`navbar-link ${activeRoute === item.key ? 'active' : ''}`}
                 >
                   {Icon && <Icon size={16} />}
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
@@ -45,7 +47,7 @@ function AppNavbar({ activeRoute = 'dashboard', toggleTheme, isDark }) {
           <div className="navbar-right">
             <Link to="/" className="btn btn-sm btn-outline gap-2 hidden sm:flex">
               <LogOut size={14} />
-              Déconnexion
+              {t('navbar.logout')}
             </Link>
 
             {/* Mobile Menu Toggle */}
@@ -88,7 +90,7 @@ function AppNavbar({ activeRoute = 'dashboard', toggleTheme, isDark }) {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {Icon && <Icon size={20} />}
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
@@ -100,7 +102,7 @@ function AppNavbar({ activeRoute = 'dashboard', toggleTheme, isDark }) {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <LogOut size={20} />
-                Déconnexion
+                {t('navbar.logout')}
               </Link>
             </div>
           </div>

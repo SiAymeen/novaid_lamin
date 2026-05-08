@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Edit2, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import AddFamilyModal from '../components/AddFamilyModal';
 import AppNavbar from '../components/AppNavbar';
 
 // --- STATUS BADGE WITH NEW DESIGN ---
 function StatusBadge({ status }) {
+  const { t } = useTranslation();
   const isUrgent = status === 'URGENT';
-  
+  const label = isUrgent
+    ? t('familyManagement.status.urgent')
+    : t('familyManagement.status.stable');
+
   return (
     <div className={`badge badge-${isUrgent ? 'urgent' : 'stable'}`}>
       <span className={`badge-dot ${isUrgent ? 'pulse' : ''}`} />
-      {status}
+      {label}
     </div>
   );
 }
 
 // --- MOCK DATA ---
+// `needs` are stored as i18n keys (resolved via t('dashboard.needs.<key>'))
 const initialFamilies = [
-  { _id: '1', name: 'Famille Ben Salah', address: 'Sousse, Khzema', status: 'STABLE', needs: ['Alimentaire', 'Médical'] },
-  { _id: '2', name: 'Famille Ayadi', address: 'Sfax, Menzel Chaker', status: 'URGENT', needs: ['Médical', 'Alimentaire'] },
-  { _id: '3', name: 'Famille Belghith', address: 'Tunis, Mrezga', status: 'URGENT', needs: ['Médical', 'Scolaire'] },
+  { _id: '1', name: 'Famille Ben Salah', address: 'Sousse, Khzema', status: 'STABLE', needs: ['food', 'medical'] },
+  { _id: '2', name: 'Famille Ayadi', address: 'Sfax, Menzel Chaker', status: 'URGENT', needs: ['medical', 'food'] },
+  { _id: '3', name: 'Famille Belghith', address: 'Tunis, Mrezga', status: 'URGENT', needs: ['medical', 'school'] },
 ];
 
 function FamilyManagement({ toggleTheme, isDark }) {
+  const { t } = useTranslation();
   const [families, setFamilies] = useState(initialFamilies);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +47,7 @@ function FamilyManagement({ toggleTheme, isDark }) {
   };
 
   const handleDeleteFamily = (familyId) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer cette famille ?")) {
+    if (window.confirm(t('familyManagement.confirmDelete'))) {
       setFamilies(prev => prev.filter(f => f._id !== familyId));
     }
   };
@@ -66,19 +73,19 @@ function FamilyManagement({ toggleTheme, isDark }) {
   return (
     <div className="page-container">
       <AppNavbar activeRoute="families" toggleTheme={toggleTheme} isDark={isDark} />
-      
+
       <main className="page-main">
         {/* PAGE HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="page-title">Gestion des Familles</h1>
-            <p className="text-secondary">Annuaire et suivi des familles</p>
+            <h1 className="page-title">{t('familyManagement.title')}</h1>
+            <p className="text-secondary">{t('familyManagement.subtitle')}</p>
           </div>
           <button
             onClick={handleOpenAdd}
             className="btn btn-primary"
           >
-            + Ajouter une famille
+            {t('familyManagement.addFamily')}
           </button>
         </div>
 
@@ -98,7 +105,7 @@ function FamilyManagement({ toggleTheme, isDark }) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Rechercher une famille..."
+                placeholder={t('familyManagement.searchPlaceholder')}
                 className="search-input"
               />
             </div>
@@ -108,11 +115,11 @@ function FamilyManagement({ toggleTheme, isDark }) {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Nom</th>
-                    <th>Adresse</th>
-                    <th>Statut</th>
-                    <th>Besoins</th>
-                    <th className="text-right">Actions</th>
+                    <th>{t('familyManagement.table.name')}</th>
+                    <th>{t('familyManagement.table.address')}</th>
+                    <th>{t('familyManagement.table.status')}</th>
+                    <th>{t('familyManagement.table.needs')}</th>
+                    <th className="text-right">{t('familyManagement.table.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -133,7 +140,7 @@ function FamilyManagement({ toggleTheme, isDark }) {
                             {family.needs?.length > 0 ? (
                               family.needs.map((need, idx) => (
                                 <span key={idx} className="need-pill need-pill-default">
-                                  {need}
+                                  {t(`dashboard.needs.${need}`, need)}
                                 </span>
                               ))
                             ) : (
@@ -143,17 +150,17 @@ function FamilyManagement({ toggleTheme, isDark }) {
                         </td>
                         <td>
                           <div className="flex items-center justify-end gap-2">
-                            <button 
+                            <button
                               onClick={() => handleOpenEdit(family)}
                               className="action-button edit"
-                              title="Éditer"
+                              title={t('familyManagement.table.edit')}
                             >
                               <Edit2 size={16} />
                             </button>
-                            <button 
+                            <button
                               onClick={() => handleDeleteFamily(family._id)}
                               className="action-button delete"
-                              title="Supprimer"
+                              title={t('familyManagement.table.delete')}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -164,7 +171,7 @@ function FamilyManagement({ toggleTheme, isDark }) {
                   ) : (
                     <tr>
                       <td colSpan="5" className="text-center py-8 text-muted">
-                        Aucune famille trouvée
+                        {t('familyManagement.noResults')}
                       </td>
                     </tr>
                   )}

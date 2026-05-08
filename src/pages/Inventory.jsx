@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Package, Plus, Minus, Search, Edit2, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import AppNavbar from '../components/AppNavbar';
 import AddStockModal from '../components/AddStockModal';
 
 // --- STATUS BADGE ---
 function StatusBadge({ isLow }) {
+  const { t } = useTranslation();
   const statusBadge = isLow ? 'urgent' : 'stable';
-  const label = isLow ? 'Bas' : 'OK';
+  const label = isLow ? t('inventory.status.low') : t('inventory.status.ok');
 
   return (
     <div className={`badge badge-${statusBadge}`}>
@@ -17,12 +19,15 @@ function StatusBadge({ isLow }) {
 }
 
 function Inventory({ toggleTheme, isDark }) {
+  const { t } = useTranslation();
+
+  // Mock data: `category` and `unit` are i18n keys, resolved via t() at render.
   const [items, setItems] = useState([
-    { id: '1', name: 'Lait infantile', category: 'Alimentaire', quantity: 5, unit: 'boîtes', minThreshold: 10 },
-    { id: '2', name: 'Doliprane 1000', category: 'Médical', quantity: 45, unit: 'boîtes', minThreshold: 20 },
-    { id: '3', name: 'Couvertures', category: 'Autre', quantity: 2, unit: 'pièces', minThreshold: 5 },
-    { id: '4', name: 'Cahiers scolaires', category: 'Scolaire', quantity: 120, unit: 'pièces', minThreshold: 50 },
-    { id: '5', name: 'Pâtes', category: 'Alimentaire', quantity: 25, unit: 'kg', minThreshold: 30 },
+    { id: '1', name: 'Lait infantile', category: 'food', quantity: 5, unit: 'box', minThreshold: 10 },
+    { id: '2', name: 'Doliprane 1000', category: 'medical', quantity: 45, unit: 'box', minThreshold: 20 },
+    { id: '3', name: 'Couvertures', category: 'other', quantity: 2, unit: 'piece', minThreshold: 5 },
+    { id: '4', name: 'Cahiers scolaires', category: 'school', quantity: 120, unit: 'piece', minThreshold: 50 },
+    { id: '5', name: 'Pâtes', category: 'food', quantity: 25, unit: 'kg', minThreshold: 30 },
   ]);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,7 +45,7 @@ function Inventory({ toggleTheme, isDark }) {
   };
 
   const handleDeleteItem = (id) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet article ?")) {
+    if (window.confirm(t('inventory.confirmDelete'))) {
       setItems((prev) => prev.filter((i) => i.id !== id));
     }
   };
@@ -67,8 +72,10 @@ function Inventory({ toggleTheme, isDark }) {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return true;
     const name = (i.name || '').toLowerCase();
-    const category = (i.category || '').toLowerCase();
-    return name.includes(q) || category.includes(q);
+    // search both raw category key and translated label
+    const categoryRaw = (i.category || '').toLowerCase();
+    const categoryLabel = t(`inventory.category.${i.category}`, i.category).toLowerCase();
+    return name.includes(q) || categoryRaw.includes(q) || categoryLabel.includes(q);
   });
 
   return (
@@ -81,15 +88,15 @@ function Inventory({ toggleTheme, isDark }) {
           <div>
             <h1 className="page-title flex items-center gap-3">
               <Package size={32} style={{ color: 'var(--color-blue)' }} />
-              Gestion des Stocks
+              {t('inventory.title')}
             </h1>
-            <p className="text-secondary">Gérez les stocks de votre association</p>
+            <p className="text-secondary">{t('inventory.subtitle')}</p>
           </div>
           <button
             onClick={handleOpenAdd}
             className="btn btn-primary"
           >
-            + Ajouter un article
+            {t('inventory.addItem')}
           </button>
         </div>
 
@@ -109,7 +116,7 @@ function Inventory({ toggleTheme, isDark }) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Rechercher un article..."
+                placeholder={t('inventory.searchPlaceholder')}
                 className="search-input"
               />
             </div>
@@ -119,11 +126,11 @@ function Inventory({ toggleTheme, isDark }) {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Nom de l'article</th>
-                    <th>Catégorie</th>
-                    <th>Statut</th>
-                    <th>Quantité</th>
-                    <th className="text-right">Actions</th>
+                    <th>{t('inventory.table.name')}</th>
+                    <th>{t('inventory.table.category')}</th>
+                    <th>{t('inventory.table.status')}</th>
+                    <th>{t('inventory.table.quantity')}</th>
+                    <th className="text-right">{t('inventory.table.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -136,7 +143,7 @@ function Inventory({ toggleTheme, isDark }) {
                             {item.name}
                           </td>
                           <td className="text-slate-600 dark:text-slate-400">
-                            {item.category}
+                            {t(`inventory.category.${item.category}`, item.category)}
                           </td>
                           <td>
                             <StatusBadge isLow={isLow} />
@@ -149,19 +156,19 @@ function Inventory({ toggleTheme, isDark }) {
                                 disabled={item.quantity <= 0}
                                 className="control-btn control-btn-minus"
                                 style={{width: '28px', height: '28px'}}
-                                title="Retirer"
+                                title={t('inventory.table.removeQty')}
                               >
                                 <Minus size={14} />
                               </button>
                               <span className="font-medium min-w-[3rem] text-center">
-                                {item.quantity} <span className="text-xs text-muted">{item.unit}</span>
+                                {item.quantity} <span className="text-xs text-muted">{t(`inventory.unit.${item.unit}`, item.unit)}</span>
                               </span>
                               <button
                                 type="button"
                                 onClick={() => handleAddQty(item.id)}
                                 className="control-btn control-btn-plus"
                                 style={{width: '28px', height: '28px'}}
-                                title="Ajouter"
+                                title={t('inventory.table.addQty')}
                               >
                                 <Plus size={14} />
                               </button>
@@ -169,17 +176,17 @@ function Inventory({ toggleTheme, isDark }) {
                           </td>
                           <td>
                             <div className="flex items-center justify-end gap-2">
-                              <button 
+                              <button
                                 onClick={() => handleOpenEdit(item)}
                                 className="action-button edit"
-                                title="Éditer"
+                                title={t('inventory.table.edit')}
                               >
                                 <Edit2 size={16} />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => handleDeleteItem(item.id)}
                                 className="action-button delete"
-                                title="Supprimer"
+                                title={t('inventory.table.delete')}
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -191,7 +198,7 @@ function Inventory({ toggleTheme, isDark }) {
                   ) : (
                     <tr>
                       <td colSpan="5" className="text-center py-8 text-muted">
-                        Aucun article trouvé
+                        {t('inventory.noResults')}
                       </td>
                     </tr>
                   )}

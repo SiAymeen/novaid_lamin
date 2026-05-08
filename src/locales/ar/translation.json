@@ -1,0 +1,189 @@
+{
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "search": "بحث",
+    "close": "إغلاق",
+    "loading": "جاري التحميل...",
+    "success": "نجح",
+    "error": "خطأ",
+    "reset": "إعادة تعيين",
+    "saved": "تم حفظ التفضيلات!",
+    "today": "اليوم",
+    "viewFile": "عرض الملف"
+  },
+  "navbar": {
+    "dashboard": "لوحة القيادة",
+    "families": "العائلات",
+    "alerts": "التنبيهات",
+    "map": "الخريطة",
+    "inventory": "المخزون",
+    "users": "المستخدمون",
+    "missions": "مهامي",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "dashboard": {
+    "title": "لوحة القيادة",
+    "subtitle": "نظرة عامة على العائلات والإحصائيات",
+    "stats": {
+      "totalFamilies": "إجمالي العائلات",
+      "urgentFamilies": "العائلات العاجلة",
+      "visitsDone": "الزيارات المنجزة"
+    },
+    "needs": {
+      "title": "توزيع الاحتياجات",
+      "food": "غذائي",
+      "medical": "طبي",
+      "clothes": "ملابس",
+      "social": "اجتماعي",
+      "school": "مدرسي"
+    },
+    "visits": {
+      "title": "الزيارات هذا الأسبوع",
+      "label": "الزيارات",
+      "day": "اليوم:"
+    },
+    "families": "عائلة"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "description": "خصص عرض التطبيق",
+    "fontSize": "حجم النص",
+    "fontSizeDesc": "اختر حجمه لقراءة أفضل.",
+    "fontWeight": "سمك النص",
+    "fontWeightDesc": "زده لتباين أفضل.",
+    "appearance": "المظهر",
+    "appearanceDesc": "اختر الوضع الفاتح أو الداكن.",
+    "lightMode": "الوضع الفاتح",
+    "darkMode": "الوضع الداكن",
+    "languageDesc": "اختر لغة الواجهة."
+  },
+  "language": {
+    "switch": "اللغة",
+    "english": "الإنجليزية",
+    "french": "الفرنسية",
+    "arabic": "العربية"
+  },
+  "alerts": {
+    "title": "التنبيهات",
+    "subtitle": "الحالات الحرجة والنشاط الأخير",
+    "criticalFamilies": "العائلات الحرجة",
+    "urgentSituations": "حالات عاجلة",
+    "critical": "حرجة",
+    "forgottenVisits": "زيارات منسية",
+    "lastVisit": "آخر زيارة",
+    "noCritical": "لا توجد حالات حرجة حالياً",
+    "criticalStock": "مخزون حرج",
+    "stockOK": "مستويات المخزون جيدة",
+    "recentReports": "التقارير الأخيرة",
+    "noReports": "لا توجد تقارير حديثة",
+    "planVisit": "جدولة زيارة",
+    "visitSaved": "تم حفظ الزيارة بنجاح",
+    "neverVisited": "لم تتم زيارتها قط",
+    "yesterday": "أمس",
+    "daysAgo_zero": "اليوم",
+    "daysAgo_one": "منذ يوم واحد",
+    "daysAgo_two": "منذ يومين",
+    "daysAgo_few": "منذ {{count}} أيام",
+    "daysAgo_many": "منذ {{count}} يوماً",
+    "daysAgo_other": "منذ {{count}} يوم"
+  },
+  "familyManagement": {
+    "title": "إدارة العائلات",
+    "subtitle": "دليل العائلات ومتابعتها",
+    "addFamily": "+ إضافة عائلة",
+    "searchPlaceholder": "ابحث عن عائلة...",
+    "confirmDelete": "هل أنت متأكد من رغبتك في حذف هذه العائلة؟",
+    "noResults": "لم يتم العثور على أي عائلة",
+    "table": {
+      "name": "الاسم",
+      "address": "العنوان",
+      "status": "الحالة",
+      "needs": "الاحتياجات",
+      "actions": "الإجراءات",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "status": {
+      "urgent": "عاجل",
+      "stable": "مستقر"
+    }
+  },
+  "inventory": {
+    "title": "إدارة المخزون",
+    "subtitle": "إدارة مخزون جمعيتك",
+    "addItem": "+ إضافة مادة",
+    "searchPlaceholder": "ابحث عن مادة...",
+    "confirmDelete": "هل أنت متأكد من رغبتك في حذف هذه المادة؟",
+    "noResults": "لم يتم العثور على أي مادة",
+    "table": {
+      "name": "اسم المادة",
+      "category": "الفئة",
+      "status": "الحالة",
+      "quantity": "الكمية",
+      "actions": "الإجراءات",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "addQty": "إضافة",
+      "removeQty": "خصم"
+    },
+    "status": {
+      "low": "منخفض",
+      "ok": "متوفر"
+    },
+    "category": {
+      "food": "غذائي",
+      "medical": "طبي",
+      "school": "مدرسي",
+      "clothes": "ملابس",
+      "social": "اجتماعي",
+      "other": "أخرى"
+    },
+    "unit": {
+      "box": "علب",
+      "piece": "قطع",
+      "kg": "كغ"
+    }
+  },
+  "users": {
+    "title": "إدارة المستخدمين",
+    "subtitle": "إدارة وصول الفريق والأدوار",
+    "addUser": "+ إضافة مستخدم",
+    "searchPlaceholder": "ابحث عن مستخدم...",
+    "confirmDelete": "هل أنت متأكد من رغبتك في حذف هذا المستخدم؟",
+    "noResults": "لم يتم العثور على أي مستخدم",
+    "table": {
+      "name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "actions": "الإجراءات",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "role": {
+      "ADMIN": "مسؤول",
+      "COORDINATOR": "منسق",
+      "VOLUNTEER": "متطوع"
+    }
+  },
+   "missions": {
+    "title": "مهامي",
+    "nearbyTitle": "مهام قريبة منك",
+    "nearbySubtitle": "عائلات قريبة (أقل من {{max}} كم) - أولوية موصى بها.",
+    "noNearby": "لا توجد مهام قريبة في الوقت الحالي.",
+    "farTitle": "مهام متاحة أخرى",
+    "farSubtitle": "عائلات بعيدة (أكثر من {{max}} كم) - استكشف بعد المهام القريبة.",
+    "noFar": "لا توجد مهام أخرى متاحة.",
+    "completedTitle": "المهام المكتملة",
+    "noCompleted": "لا توجد مهام مكتملة.",
+    "visitPlanned": "زيارة مجدولة — ",
+    "farAway": "بعيد عنك",
+    "assigned": "مهمة مخصصة",
+    "open": "مهمة مفتوحة",
+    "farWarning": "⚠️ هذه المهمة بعيدة جداً عنك ({{distance}} كم > {{max}} كم). يمكنك أخذها، لكن ابحث عن المهام القريبة أولاً.",
+    "startMission": "ابدأ المهمة"
+  }
+}
